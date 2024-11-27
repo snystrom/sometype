@@ -154,6 +154,7 @@ unwrap <- function(x) {
 #' but it's an `int`.
 #'
 #' @export
+#' @rdname not-unwrap
 #' @examples
 #' !some(5) == 5
 #' \dontrun{

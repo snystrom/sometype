@@ -11,7 +11,7 @@ option(x, .none_predicates = default_none_predicates())
 
 \item{.none_predicates}{a list of predicate functions that evaluate to
 TRUE/FALSE. If a predicate evalutes to \code{TRUE}, we return \code{none}, else we
-return \code{some(x)}. Default: \code{default_none_predicates()}}
+return \code{some(x)}. Default: \code{default_none_predicates()}. This is still experimental.}
 }
 \value{
 an option
