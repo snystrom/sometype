@@ -48,18 +48,28 @@ answer <- div0(10,2)
 
 # This is not allowed
 answer > 2
+#> Error: Cannot use > on Option<Some>
 ```
 
-    # Explicitly handling the option allows comparison
-    unwrap(answer) > 2
+``` r
+# Explicitly handling the option allows comparison
+unwrap(answer) > 2
+#> [1] TRUE
+```
 
-    # Syntactic sugar allows auto-unwrapping 
-    # (this is probably a bad idea and I'll kill this later)
-    answer <- !div0(10,2)
-    answer == 5
+``` r
+# Syntactic sugar allows auto-unwrapping 
+# (this is probably a bad idea and I'll kill this later)
+answer <- !div0(10,2)
+answer == 5
+#> [1] TRUE
+```
 
-    # Unwrap(none) will crash
-    answer <- !div0(10,0)
+``` r
+# Unwrap(none) will crash
+answer <- !div0(10,0)
+#> Error: Cannot unwrap, got None
+```
 
 ### Option<T> constructors
 
@@ -69,21 +79,27 @@ or by using the `option()` constructor.
 ``` r
 # Values become Some()
 option(5)
+#> some(numeric)
+#> [1] 5
 ```
 
 ``` r
 # Missing values become None
 option(NULL)
+#> None
 ```
 
 ``` r
 # Options can be manually constructed
 some(5) 
+#> some(numeric)
+#> [1] 5
 ```
 
 ``` r
 # none is a special keyword export!
 none
+#> None
 ```
 
 Users can provide custom predicates to produce `Option<None>` from
@@ -95,20 +111,29 @@ gt_five <- function(x) {
 }
 
 option(10, list(gt_five))
+#> None
 ```
 
 ### Handling Options
 
-    # Return a default value on None
-    unwrap_or(div0(1,0), 0)
-    
-    
-    # Do a custom behavior on None
-    oh_no <- function() {
-      print("Oh No!")
-    }
-    
-    unwrap_or_else(div0(1,0), oh_no)
-    
-    # Throw a specific error on None
-    expect(div0(1,0), "I divided by zero!")
+``` r
+# Return a default value on None
+unwrap_or(div0(1,0), 0)
+#> [1] 0
+```
+
+``` r
+# Do a custom behavior on None
+oh_no <- function() {
+  print("Oh No!")
+}
+
+unwrap_or_else(div0(1,0), oh_no)
+#> [1] "Oh No!"
+```
+
+``` r
+# Throw a specific error on None
+expect(div0(1,0), "I divided by zero!")
+#> Error: I divided by zero!
+```

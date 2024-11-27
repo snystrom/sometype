@@ -36,7 +36,7 @@ remotes::install_github("snystrom/sometype")
 
 Options are useful for wrapping values that can be missing (`None`) or real (`Some`), forcing the user to handle them explicitly.
 
-```r
+```{r, error=TRUE}
 library(sometype)
 
 div0 <- function(x, y) {
@@ -53,19 +53,19 @@ answer <- div0(10,2)
 answer > 2
 ```
 
-```
+```{r}
 # Explicitly handling the option allows comparison
 unwrap(answer) > 2
 ```
 
-```
+```{r}
 # Syntactic sugar allows auto-unwrapping 
 # (this is probably a bad idea and I'll kill this later)
 answer <- !div0(10,2)
 answer == 5
 ```
 
-```
+```{r, error = TRUE}
 # Unwrap(none) will crash
 answer <- !div0(10,0)
 ```
@@ -74,28 +74,28 @@ answer <- !div0(10,0)
 
 Users can manually build `Option<T>` objects using `some()` and `none`, or by using the `option()` constructor.
 
-```r
+```{r}
 # Values become Some()
 option(5)
 ```
 
-```r
+```{r}
 # Missing values become None
 option(NULL)
 ```
 
-```r
+```{r}
 # Options can be manually constructed
 some(5) 
 ```
 
-```r
+```{r}
 # none is a special keyword export!
 none
 ```
 
 Users can provide custom predicates to produce `Option<None>` from values.
-```r
+```{r}
 gt_five <- function(x) {
   x > 5
 }
@@ -105,18 +105,21 @@ option(10, list(gt_five))
 
 ### Handling Options
 
-```
+```{r}
 # Return a default value on None
 unwrap_or(div0(1,0), 0)
+```
 
-
+```{r}
 # Do a custom behavior on None
 oh_no <- function() {
   print("Oh No!")
 }
 
 unwrap_or_else(div0(1,0), oh_no)
+```
 
+```{r, error=TRUE}
 # Throw a specific error on None
 expect(div0(1,0), "I divided by zero!")
 ```
