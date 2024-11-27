@@ -3,6 +3,8 @@ test_that("some() constructors work", {
   expect_true(is_some(some(5)))
   expect_false(is_none(some(5)))
   expect_s3_class(some(5), "option")
+  # Invariant holds
+  expect_equal(some(some(5)), some(5))
 })
 
 test_that("some equality works", {
@@ -14,6 +16,23 @@ test_that("some equality works", {
 test_that("unwrap", {
   expect_error(unwrap(5), "Cannot unwrap")
   expect_error(unwrap(none), "got None")
+})
+
+test_that("unwrap_or", {
+  expect_equal(unwrap_or(5, 5), 5)
+  expect_equal(unwrap_or(some(1), 5), 1)
+  expect_equal(unwrap_or(none, 5), 5)
+})
+
+test_that("unwrap_or_else", {
+
+  fun <- function() {
+    return(5)
+  }
+
+  expect_equal(unwrap_or_else(5, fun), 5)
+  expect_equal(unwrap_or_else(some(1), fun), 1)
+  expect_equal(unwrap_or_else(none, fun), 5)
 })
 
 

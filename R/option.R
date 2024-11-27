@@ -13,7 +13,9 @@ default_none_predicates <- function() {
   )
 }
 
-#' @param x a value to convert to `some()` or `none`.
+#' Coerce value to an option
+#'
+#' @param x a value to convert to `some()` or `none` based on a set of predicates.
 #' @param .none_predicates a list of predicate functions that evaluate to
 #'   TRUE/FALSE. If a predicate evalutes to `TRUE`, we return `none`, else we
 #'   return `some(x)`. Default: `default_none_predicates()`
@@ -63,6 +65,11 @@ option_t.option <- function(x) {
 #' @export
 some <- function(x) {
   stopifnot("Cannot create Some from None" = !is_none(x))
+
+  if (is_some(x)) {
+    return(x)
+  }
+
   structure(x,
             class = "option",
             enum = "some",
@@ -71,11 +78,14 @@ some <- function(x) {
 }
 
 # TODO: IDK that I like this impl, but let's jam for now
-#
+# Another option could be structure("None")
+# which has the added benefit of working with glue:: et. al.
 #' @export
-none <- structure(list(),
+none <- structure("None",
                   class = "option",
                   enum = "none")
+#lockBinding('none', .GlobalEnv)
+
 
 #' @export
 print.option <- function(x, ...) {
@@ -112,6 +122,10 @@ is_none <- function(x) {
   is_option(x) && option_enum(x, "none")
 }
 
+#' Extract a contained value in an option or error
+#' @param x a value. If `some()` will extract the contained value. If `none`
+#'   will crash.
+#' @return the unwrapped value in some(x)
 #' @export
 unwrap <- function(x) {
   if (is_none(x)) {
@@ -131,6 +145,57 @@ unwrap <- function(x) {
   }
 }
 
+#' Unwrap or return a default value
+#' @param x a value
+#' @param .default the default to return
+unwrap_or <- function(x, .default) {
+  if (is_some(x)) {
+    return(unwrap(x))
+  }
+  return(.default)
+}
+
+#' Unwrap or return a function result
+#'
+#' @param x a value
+#' @param .fn the function to evaluate
+#' @return unwrap(x) or the return of `.fn()`
+#' @examples
+#' unwrap_or_else(none, function() {"whoops!"})
+#' unwrap_or_else(some(5), function() {"whoops!"})
+#' @export
+unwrap_or_else <- function(x, .fn) {
+  stopifnot(".fn must be a function" = is.function(.fn))
+  if (is_some(x)) {
+    return(unwrap(x))
+  }
+  .fn()
+}
+
+#' Unwrap an option or error with message
+#' @param x a value
+#' @param msg a custom error message. This should describe the reason you expect
+#'   the option to be `some`.
+#' @return the unwrapped value in some(x)
+#' @examples
+#' is_five <- some(5)
+#' five <- expect(is_five, "This variable hold the number 5.")
+#' \dontrun{
+#' # A function we think should always return some()
+#' # but for some mysterious reason, it does not.
+#' should_always_work <- function(x) {none}
+#
+#' # This errors!
+#' expect(should_always_work(1), "This shouldn't be none")
+#' }
+#' @export
+expect <- function(x, msg) {
+  if (is_none(x) || !is_some(x)) {
+    stop(msg, call. = FALSE)
+  }
+  unwrap(x)
+}
+
 #' @export
 `==.option` <- function(e1, e2) {
   if (is_none(e1) || is_none(e2)) {
@@ -139,4 +204,3 @@ unwrap <- function(x) {
 
   unwrap(e1) == unwrap(e2)
 }
-
