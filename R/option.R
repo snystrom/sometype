@@ -9,7 +9,7 @@ default_none_predicates <- function() {
   list(
     missing,
     is.null,
-    is.na
+    is.na # TODO: this is maybe too opinionated... need to think about this one.
   )
 }
 
@@ -18,11 +18,13 @@ default_none_predicates <- function() {
 #' @param x a value to convert to `some()` or `none` based on a set of predicates.
 #' @param .none_predicates a list of predicate functions that evaluate to
 #'   TRUE/FALSE. If a predicate evalutes to `TRUE`, we return `none`, else we
-#'   return `some(x)`. Default: `default_none_predicates()`
+#'   return `some(x)`. Default: `default_none_predicates()`. This is still experimental.
 #'
 #' @return an option
 #' @seealso default_none_predicates
 option <- function(x, .none_predicates = default_none_predicates()) {
+  # TODO: NULL must ALWAYS become None, so that means is.null has to be one of the predicates.
+  # probably wanna rework this system.
   stopifnot(".none_predicates must be a list" = is.list(.none_predicates))
 
   if (is.null(.none_predicates)) {
@@ -143,6 +145,23 @@ unwrap <- function(x) {
     # TODO: do we panic?
     stop("Cannot unwrap raw value", call. = FALSE)
   }
+}
+
+
+#' Syntatic sugar to unwrap an Option
+#'
+#' EXPERIMENTAL & maybe a footgun. Ex if you `!x` thinking `x` is an option,
+#' but it's an `int`.
+#'
+#' @export
+#' @examples
+#' !some(5) == 5
+#' \dontrun{
+#' # This will error!
+#' !none
+#' }
+`!.option` <- function(e1) {
+  unwrap(e1)
 }
 
 #' Unwrap or return a default value
