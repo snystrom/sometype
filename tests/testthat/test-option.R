@@ -35,6 +35,12 @@ test_that("unwrap_or_else", {
   expect_equal(unwrap_or_else(none, fun), 5)
 })
 
+test_that("expect", {
+  expect_error(expect(5, "expected some"), "expected some")
+  expect_equal(expect(some(1), "expected some"), 1)
+  expect_error(expect(none, "expected some"), "expected some")
+})
+
 
 test_that("option converts", {
 
