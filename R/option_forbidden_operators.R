@@ -79,11 +79,11 @@ block_operator <- function(e1, e2, opstr, ...) {
 }
 
 #' @export
-`[.option` <- function(e1, e2) {
-  block_operator(e1, e2, "[")
+`[.option` <- function(x, i) {
+  block_operator(x, i, "[")
 }
 
 #' @export
-`[[.option` <- function(e1, e2) {
-  block_operator(e1, e2, "[[")
+`[[.option` <- function(x, i) {
+  block_operator(x, i, "[[")
 }
