@@ -91,9 +91,9 @@ test_that("Comparison works", {
 })
 
 test_that("as.option works", {
-  expect_equal(as.option(ok(1)), some(1))
-  expect_equal(as.option(error()), none)
-  expect_error(as.option(1), "no applicable method")
+  expect_equal(as_option(ok(1)), some(1))
+  expect_equal(as_option(error()), none)
+  expect_error(as_option(1), "no applicable method")
 })
 
 test_that("expect_err works", {

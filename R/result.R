@@ -161,14 +161,14 @@ try_result <- function(expr, ...) {
 #' @return If Ok(x), returns `some(x)`, if Error, returns `none`.
 #' @export
 #' @examples
-#' as.option(ok(1)) == some(1)
-#' as.option(error()) == none
-as.option <- function(x) {
-  UseMethod("as.option")
+#' as_option(ok(1)) == some(1)
+#' as_option(error()) == none
+as_option <- function(x) {
+  UseMethod("as_option")
 }
 
 #' @export
-as.option.result <- function(x) {
+as_option.result <- function(x) {
   if (is_ok(x)) {
     return(some(unwrap(x)))
   }

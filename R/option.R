@@ -149,3 +149,22 @@ is_none <- function(x) {
 
   unwrap(e1) == unwrap(e2)
 }
+
+#' Convert an option to Result<T,E>
+#' @param x an Option
+#' @inheritParams error
+#' @export
+#' @examples
+#' ok_or(some(1), "expected_some")
+#' ok_or(none, "expected_some")
+ok_or <- function(x, .error_type, ...) {
+  UseMethod("ok_or")
+}
+
+#' @export
+ok_or.option <- function(x, .error_type, ...) {
+  if (is_some(x))
+    return(ok(unwrap(x)))
+
+  error(.error_type, ...)
+}

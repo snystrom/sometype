@@ -220,6 +220,12 @@ ok(5)
 #> [1] 5
 ```
 
+``` r
+# results cannot nest (this differs from Rust!)
+ok(ok(5)) == ok(5)
+#> [1] TRUE
+```
+
 Results can be unwrapped just like Options.
 
 ``` r
@@ -406,10 +412,49 @@ if (is_err(result)) {
 # Continue with success logic
 ```
 
+## Conversion Methods
+
+### Option to Result
+
+``` r
+ok_or(some(1))
+#> Result<ok(numeric)>
+#> [1] 1
+```
+
+``` r
+ok_or(none)
+#> Result<Error>
+#>   Error<generic_result_error>
+#>     'generic_result_error'
+```
+
+### Result to Option
+
+``` r
+as_option(ok(1))
+#> some(numeric)
+#> [1] 1
+```
+
+``` r
+as_option(error())
+#> None
+```
+
+``` r
+as_option(
+  try_result({
+    stop("oh no!")
+  })
+)
+#> None
+```
+
 ## TODO's
 
--   `expect`, `unwrap_*` methods for `result`s
--   Transform Result to Option
 -   Boolean operators for Result & Option (atm they are forbidden)
 -   Comparison operators for Result & Option (atm they are forbidden)
 -   Still some weirdness with the `error` impl, it could be better. (should we store & throw the original condition somehow?)
+
+-   I'm not sold whether S3 is the right impl. May test an R6 version so it is more clear what methods are allowed on Result vs Option, etc.

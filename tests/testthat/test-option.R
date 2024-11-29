@@ -88,3 +88,8 @@ test_that("option as methods are forbidden", {
   lapply(ops, test_as_method, x = none)
 
 })
+
+test_that("ok_or works", {
+  expect_equal(ok_or(some(1), "expected_some"), ok(1))
+  expect_equal(ok_or(none, "expected_some"), error("expected_some"))
+})
