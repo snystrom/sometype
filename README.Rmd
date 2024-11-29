@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-This is a collection of experiments implementing Option & Result types in (mostly) base R. The API draws most of its inspiration from the [Rust](https://www.rust-lang.org/) standard library ([Option<T>](https://doc.rust-lang.org/std/option/), [Result<T, E>](https://doc.rust-lang.org/std/result/)). 
+This is a collection of experiments implementing Option & Result types in base R. The API draws most of its inspiration from the [Rust](https://www.rust-lang.org/) standard library ([Option<T>](https://doc.rust-lang.org/std/option/), [Result<T, E>](https://doc.rust-lang.org/std/result/)). 
 
 Other packages have done something for `Option` ([maybe](https://cran.r-project.org/package=maybe), [optional](https://cran.r-project.org/package=optional), among others).
 
