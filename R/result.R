@@ -99,19 +99,6 @@ result_ok_t <- function(x) {
   attr(x, "result_ok_t", exact = TRUE)
 }
 
-#' @export
-unwrap.result <- function(x) {
-  if (is_err(x)) {
-    stop("Cannot unwrap Result<Error>", call. = FALSE)
-  }
-
-  if (is_ok(x)) {
-    class(x) <- result_ok_t(x)
-    attr(x, "result_enum") <- NULL
-    attr(x, "result_ok_t") <- NULL
-    return(x)
-  }
-}
 
 #' @export
 print.result <- function(x, ...) {
@@ -166,4 +153,67 @@ try_result <- function(expr, ...) {
             }),
     ...
   )
+}
+
+#' Convert a Result to an Option
+#'
+#' @param x the Result
+#' @return If Ok(x), returns `some(x)`, if Error, returns `none`.
+#' @export
+#' @examples
+#' as.option(ok(1)) == some(1)
+#' as.option(error()) == none
+as.option <- function(x) {
+  UseMethod("as.option")
+}
+
+#' @export
+as.option.result <- function(x) {
+  if (is_ok(x)) {
+    return(some(unwrap(x)))
+  }
+
+  return(none)
+}
+
+#' Throws error if Result<Ok>
+#' @param x a Result
+#' @param msg the error message to throw
+#' @export
+#' @examples
+#' expect_err(error(), "Should give generic_result_error")
+#' \dontrun{
+#' expect_err(ok(1), "Got OK!, Expected a Result<Error>")
+#' }
+expect_err <- function(x, msg) {
+  UseMethod("expect_err")
+}
+
+#' @export
+expect_err.result <- function(x, msg) {
+  if (is_ok(x))
+    stop(msg, call. = FALSE)
+
+  x
+}
+
+#' Return Error or panic with Ok() value.
+#' @param x a Result
+#' @return an Error if Result<Error>
+#' @export
+#' @examples
+#' unwrap_err(error())
+#' \dontrun{
+#' unwrap_err(ok(1))
+#' }
+unwrap_err <- function(x) {
+  UseMethod("unwrap_err")
+}
+
+#' @export
+unwrap_err.result <- function(x) {
+  if (is_ok(x))
+    stop(unwrap(x), call. = FALSE)
+
+  x
 }

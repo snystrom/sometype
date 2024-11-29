@@ -124,36 +124,6 @@ is_none <- function(x) {
   is_option(x) && option_enum(x, "none")
 }
 
-unwrap <- function(x) {
-  UseMethod("unwrap")
-}
-
-#' Extract a contained value in an option or error
-#' @param x a value. If `some()` will extract the contained value. If `none`
-#'   will crash.
-#' @return the unwrapped value in some(x)
-#' @export
-unwrap.option <- function(x) {
-  if (is_none(x)) {
-    stop("Cannot unwrap, got None", call.=FALSE)
-  }
-
-  if (is_some(x)) {
-    class(x) <- attr(x, "option_t", exact = TRUE)
-    attr(x, "enum") <- NULL
-    attr(x, "option_t") <- NULL
-    return(x)
-  }
-
-  stop("Error unwrapping unknown option. Should never throw.", call. = FALSE)
-}
-
-#' @export
-unwrap.default <- function(x) {
-  stop("Cannot unwrap raw value", call. = FALSE)
-}
-
-
 #' Syntatic sugar to unwrap an Option
 #'
 #' EXPERIMENTAL & maybe a footgun. Ex if you `!x` thinking `x` is an option,
@@ -169,57 +139,6 @@ unwrap.default <- function(x) {
 #' }
 `!.option` <- function(e1) {
   unwrap(e1)
-}
-
-#' Unwrap or return a default value
-#' @param x a value
-#' @param .default the default to return
-unwrap_or <- function(x, .default) {
-  if (is_some(x)) {
-    return(unwrap(x))
-  }
-  return(.default)
-}
-
-#' Unwrap or return a function result
-#'
-#' @param x a value
-#' @param .fn the function to evaluate
-#' @return unwrap(x) or the return of `.fn()`
-#' @examples
-#' unwrap_or_else(none, function() {"whoops!"})
-#' unwrap_or_else(some(5), function() {"whoops!"})
-#' @export
-unwrap_or_else <- function(x, .fn) {
-  stopifnot(".fn must be a function" = is.function(.fn))
-  if (is_some(x)) {
-    return(unwrap(x))
-  }
-  .fn()
-}
-
-#' Unwrap an option or error with message
-#' @param x a value
-#' @param msg a custom error message. This should describe the reason you expect
-#'   the option to be `some`.
-#' @return the unwrapped value in some(x)
-#' @examples
-#' is_five <- some(5)
-#' five <- expect(is_five, "This variable hold the number 5.")
-#' \dontrun{
-#' # A function we think should always return some()
-#' # but for some mysterious reason, it does not.
-#' should_always_work <- function(x) {none}
-#
-#' # This errors!
-#' expect(should_always_work(1), "This shouldn't be none")
-#' }
-#' @export
-expect <- function(x, msg) {
-  if (is_none(x) || !is_some(x)) {
-    stop(msg, call. = FALSE)
-  }
-  unwrap(x)
 }
 
 #' @export

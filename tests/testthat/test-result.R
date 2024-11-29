@@ -89,3 +89,19 @@ test_that("Comparison works", {
   expect_error(ok(1) == 1, "Cannot compare Result<Ok> to non-Result.")
   expect_true(ok("hi") == ok("hi"))
 })
+
+test_that("as.option works", {
+  expect_equal(as.option(ok(1)), some(1))
+  expect_equal(as.option(error()), none)
+  expect_error(as.option(1), "no applicable method")
+})
+
+test_that("expect_err works", {
+ expect_equal(expect_err(error(), "Should give generic_result_error"), error())
+ expect_error(expect_err(ok(1), "Got OK!, Expected a Result<Error>"))
+})
+
+test_that("unwrap_err works", {
+ expect_equal(unwrap_err(error()), error())
+ expect_error(unwrap_err(ok(1), 1))
+})

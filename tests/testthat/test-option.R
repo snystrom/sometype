@@ -24,7 +24,7 @@ test_that("unwrap", {
 })
 
 test_that("unwrap_or", {
-  expect_equal(unwrap_or(5, 5), 5)
+  expect_equal(unwrap_or(1, 5), 5)
   expect_equal(unwrap_or(some(1), 5), 1)
   expect_equal(unwrap_or(none, 5), 5)
 })
@@ -35,7 +35,7 @@ test_that("unwrap_or_else", {
     return(5)
   }
 
-  expect_equal(unwrap_or_else(5, fun), 5)
+  expect_equal(unwrap_or_else(1, fun), 5)
   expect_equal(unwrap_or_else(some(1), fun), 1)
   expect_equal(unwrap_or_else(none, fun), 5)
 })
