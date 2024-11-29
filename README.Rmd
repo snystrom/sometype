@@ -177,3 +177,18 @@ as.character(some_five)
 ```
 
 If an `option` can be provided as a valid argument to a function that does not handle them and produce no errors: that's probably a [bug](https://github.com/snystrom/sometype/issues).
+
+## Result<T,E>
+
+### Error
+
+**THIS IS INCOMPLETE**
+```{r}
+e <- error("some_error", "a custom message")
+e
+```
+
+```{r, error = TRUE, eval=FALSE}
+stop(e)
+#> Error: a custom message
+```

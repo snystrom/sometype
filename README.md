@@ -1,21 +1,12 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # sometype
 
 <!-- badges: start -->
-
 <!-- badges: end -->
+This is a collection of experiments implementing Option & Result types in (mostly) base R. The API draws most of its inspiration from the [Rust](https://www.rust-lang.org/) standard library ([Option<T>](https://doc.rust-lang.org/std/option/), [Result<T, E>](https://doc.rust-lang.org/std/result/)).
 
-This is a collection of experiments implementing Option & Result types
-in (mostly) base R. The API draws most of its inspiration from the
-[Rust](https://www.rust-lang.org/) standard library
-([Option<T>](https://doc.rust-lang.org/std/option/), [Result\<T,
-E\>](https://doc.rust-lang.org/std/result/)).
-
-Other packages have done something for `Option`
-([maybe](https://cran.r-project.org/package=maybe),
-[optional](https://cran.r-project.org/package=optional), among others).
+Other packages have done something for `Option` ([maybe](https://cran.r-project.org/package=maybe), [optional](https://cran.r-project.org/package=optional), among others).
 
 ## Installation
 
@@ -30,8 +21,7 @@ remotes::install_github("snystrom/sometype")
 
 `sometype` implements an `Option` S3 type:
 
-Options are useful for wrapping values that can be missing (`None`) or
-real (`Some`), forcing the user to handle them explicitly.
+Options are useful for wrapping values that can be missing (`None`) or real (`Some`), forcing the user to handle them explicitly.
 
 ``` r
 library(sometype)
@@ -73,8 +63,7 @@ answer <- !div0(10,0)
 
 ### Option<T> constructors
 
-Users can manually build `Option<T>` objects using `some()` and `none`,
-or by using the `option()` constructor.
+Users can manually build `Option<T>` objects using `some()` and `none`, or by using the `option()` constructor.
 
 ``` r
 # Values become Some()
@@ -102,8 +91,7 @@ none
 #> None
 ```
 
-Users can provide custom predicates to produce `Option<None>` from
-values.
+Users can provide custom predicates to produce `Option<None>` from values.
 
 ``` r
 gt_five <- function(x) {
@@ -140,15 +128,9 @@ expect(div0(1,0), "I divided by zero!")
 
 ### Differences from prior implementations
 
-For better or for worse, R’s type system allows amazing flexibility
-often allowing things to “just work”. This however doesn’t work well for
-a data structure (like an `option`) that we want to **force** users to
-handle.
+For better or for worse, R's type system allows amazing flexibility often allowing things to "just work". This however doesn't work well for a data structure (like an `option`) that we want to **force** users to handle.
 
-`sometype`’s `option`s are designed for minimal compatability with the
-rest of the R ecosystem. The goal is that users **must** handle
-`options` before actual work can be done on them. Other packages do not
-implement this behavior.
+`sometype`'s `option`s are designed for minimal compatability with the rest of the R ecosystem. The goal is that users **must** handle `options` before actual work can be done on them. Other packages do not implement this behavior.
 
 To demonstrate:
 
@@ -210,6 +192,23 @@ as.character(some_five)
 #> Error: Cannot convert Option<Some> to character.
 ```
 
-If an `option` can be provided as a valid argument to a function that
-does not handle them and produce no errors: that’s probably a
-[bug](https://github.com/snystrom/sometype/issues).
+If an `option` can be provided as a valid argument to a function that does not handle them and produce no errors: that's probably a [bug](https://github.com/snystrom/sometype/issues).
+
+## Result<T,E>
+
+### Error
+
+**THIS IS INCOMPLETE**
+
+``` r
+e <- error("some_error", "a custom message")
+e
+#> Result<Error>
+#>   Error<some_error>
+#>     'a custom message'
+```
+
+``` r
+stop(e)
+#> Error: a custom messag
+```
