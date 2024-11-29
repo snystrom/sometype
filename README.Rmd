@@ -182,7 +182,6 @@ If an `option` can be provided as a valid argument to a function that does not h
 
 ### Error
 
-**THIS IS INCOMPLETE**
 ```{r}
 e <- error("some_error", "a custom message")
 e
@@ -348,4 +347,10 @@ if (is_err(result)) {
 # Continue with success logic
 ```
 
+## TODO's
+* `expect`, `unwrap_*` methods for `result`s
+* Transform Result to Option
+* Boolean operators for Result & Option (atm they are forbidden)
+* Comparison operators for Result & Option (atm they are forbidden)
+* Still some weirdness with the `error` impl, it could be better. (should we store & throw the original condition somehow?)
 
