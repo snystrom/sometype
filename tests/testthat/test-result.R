@@ -25,6 +25,10 @@ test_that("result works", {
   expect_true(is_ok(result(1)))
   expect_false(is_err(result(1)))
 
+  # result(ok()) doesn't continue nesting result().
+  expect_equal(result(ok(1)), ok(1))
+  expect_equal(ok(ok(1)), ok(1))
+
   expect_s3_class(ok(1), "result")
   t_err <- try(stop("oh no!"), silent = TRUE)
   rt_err <- error()

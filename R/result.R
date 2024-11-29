@@ -70,6 +70,10 @@ result <- function(x, .err_type = "generic_result_error") {
   if (inherits(x, "condition"))
     return(error(.err_type, message = conditionMessage(x)))
 
+  if (is_ok(x)) {
+    return(x)
+  }
+
   structure(
     x,
     class = c("result"),

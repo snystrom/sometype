@@ -198,10 +198,16 @@ stop(e)
 ok(5)
 ```
 
+```{r}
+# results cannot nest
+ok(ok(5)) == ok(5)
+```
+
 Results can be unwrapped just like Options.
 ```{r}
 unwrap(ok(5))
 ```
+
 
 ### Results are incompatible with base methods
 ```{r, error = TRUE}
