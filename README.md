@@ -126,74 +126,6 @@ expect(div0(1,0), "I divided by zero!")
 #> Error: I divided by zero!
 ```
 
-### Differences from prior implementations
-
-For better or for worse, R's type system allows amazing flexibility often allowing things to "just work". This however doesn't work well for a data structure (like an `option`) that we want to **force** users to handle.
-
-`sometype`'s `option`s are designed for minimal compatability with the rest of the R ecosystem. The goal is that users **must** handle `options` before actual work can be done on them. Other packages do not implement this behavior.
-
-To demonstrate:
-
-``` r
-optional_five <- optional::option(5)
-just_five <- maybe::just(5)
-some_five <- sometype::some(5)
-```
-
-`optional` propagates the `option` type, but allows computation.
-
-``` r
-optional_five + 1
-#> [1] 6
-```
-
-``` r
-optional::none + 1
-#> [1] "None"
-```
-
-`maybe` errors on some operations.
-
-``` r
-# This errors! Good!
-just_five + 1
-#> Error in just_five + 1: non-numeric argument to binary operator
-```
-
-But supports others:
-
-``` r
-# Oh no!
-just_five[1]
-#> $type
-#> [1] "just"
-```
-
-``` r
-# Oh no!
-as.character(just_five)
-#> [1] "just" "5"
-```
-
-`sometype` should fail on all base R operations
-
-``` r
-some_five + 1
-#> Error: Cannot use + on Option<Some>
-```
-
-``` r
-some_five[1]
-#> Error: Cannot use [ on Option<Some>
-```
-
-``` r
-as.character(some_five)
-#> Error: Cannot convert Option<Some> to character.
-```
-
-If an `option` can be provided as a valid argument to a function that does not handle them and produce no errors: that's probably a [bug](https://github.com/snystrom/sometype/issues).
-
 ## Result<T,E>
 
 ### Error
@@ -450,6 +382,74 @@ as_option(
 )
 #> None
 ```
+
+### Differences from prior implementations
+
+For better or for worse, R's type system allows amazing flexibility often allowing things to "just work". This however doesn't work well for a data structure (like an `option`) that we want to **force** users to handle.
+
+`sometype`'s `option`s are designed for minimal compatability with the rest of the R ecosystem. The goal is that users **must** handle `options` before actual work can be done on them. Other packages do not implement this behavior.
+
+To demonstrate:
+
+``` r
+optional_five <- optional::option(5)
+just_five <- maybe::just(5)
+some_five <- sometype::some(5)
+```
+
+`optional` propagates the `option` type, but allows computation.
+
+``` r
+optional_five + 1
+#> [1] 6
+```
+
+``` r
+optional::none + 1
+#> [1] "None"
+```
+
+`maybe` errors on some operations.
+
+``` r
+# This errors! Good!
+just_five + 1
+#> Error in just_five + 1: non-numeric argument to binary operator
+```
+
+But supports others:
+
+``` r
+# Oh no!
+just_five[1]
+#> $type
+#> [1] "just"
+```
+
+``` r
+# Oh no!
+as.character(just_five)
+#> [1] "just" "5"
+```
+
+`sometype` should fail on all base R operations
+
+``` r
+some_five + 1
+#> Error: Cannot use + on Option<Some>
+```
+
+``` r
+some_five[1]
+#> Error: Cannot use [ on Option<Some>
+```
+
+``` r
+as.character(some_five)
+#> Error: Cannot convert Option<Some> to character.
+```
+
+If an `option` or `result` can be provided as a valid argument to a function that does not handle them and produce no errors: that's probably a [bug](https://github.com/snystrom/sometype/issues).
 
 ## TODO's
 

@@ -124,60 +124,6 @@ unwrap_or_else(div0(1,0), oh_no)
 expect(div0(1,0), "I divided by zero!")
 ```
 
-### Differences from prior implementations
-
-For better or for worse, R's type system allows amazing flexibility often allowing things to "just work". This however doesn't work well for a data structure (like an `option`) that we want to **force** users to handle.
-
-`sometype`'s `option`s are designed for minimal compatability with the rest of the R ecosystem. The goal is that users **must** handle `options` before actual work can be done on them. Other packages do not implement this behavior.
-
-To demonstrate:
-```{r}
-optional_five <- optional::option(5)
-just_five <- maybe::just(5)
-some_five <- sometype::some(5)
-```
-
-`optional` propagates the `option` type, but allows computation.
-```{r}
-optional_five + 1
-```
-
-```{r}
-optional::none + 1
-```
-
-`maybe` errors on some operations.
-```{r, error = TRUE}
-# This errors! Good!
-just_five + 1
-```
-
-But supports others:
-```{r}
-# Oh no!
-just_five[1]
-```
-
-```{r}
-# Oh no!
-as.character(just_five)
-```
-
-`sometype` should fail on all base R operations
-```{r, error = TRUE}
-some_five + 1
-```
-
-```{r, error = TRUE}
-some_five[1]
-```
-
-```{r, error = TRUE}
-as.character(some_five)
-```
-
-If an `option` can be provided as a valid argument to a function that does not handle them and produce no errors: that's probably a [bug](https://github.com/snystrom/sometype/issues).
-
 ## Result<T,E>
 
 ### Error
@@ -207,7 +153,6 @@ Results can be unwrapped just like Options.
 ```{r}
 unwrap(ok(5))
 ```
-
 
 ### Results are incompatible with base methods
 ```{r, error = TRUE}
@@ -278,6 +223,7 @@ try_result(may_fail(11), .err_type = "a_custom_error")
 ### Refactors
 
 Consider a situation where two methods are owned by an external source (`method_one`, `method_two`), that we wrap into our own handler, `nested_may_fail`.
+
 ```{r}
 # Pretend this is from another package, we don't control whether it `stop`s
 method_one <- function() {
@@ -388,6 +334,60 @@ as_option(
   })
 )
 ```
+
+### Differences from prior implementations
+
+For better or for worse, R's type system allows amazing flexibility often allowing things to "just work". This however doesn't work well for a data structure (like an `option`) that we want to **force** users to handle.
+
+`sometype`'s `option`s are designed for minimal compatability with the rest of the R ecosystem. The goal is that users **must** handle `options` before actual work can be done on them. Other packages do not implement this behavior.
+
+To demonstrate:
+```{r}
+optional_five <- optional::option(5)
+just_five <- maybe::just(5)
+some_five <- sometype::some(5)
+```
+
+`optional` propagates the `option` type, but allows computation.
+```{r}
+optional_five + 1
+```
+
+```{r}
+optional::none + 1
+```
+
+`maybe` errors on some operations.
+```{r, error = TRUE}
+# This errors! Good!
+just_five + 1
+```
+
+But supports others:
+```{r}
+# Oh no!
+just_five[1]
+```
+
+```{r}
+# Oh no!
+as.character(just_five)
+```
+
+`sometype` should fail on all base R operations
+```{r, error = TRUE}
+some_five + 1
+```
+
+```{r, error = TRUE}
+some_five[1]
+```
+
+```{r, error = TRUE}
+as.character(some_five)
+```
+
+If an `option` or `result` can be provided as a valid argument to a function that does not handle them and produce no errors: that's probably a [bug](https://github.com/snystrom/sometype/issues).
 
 ## TODO's
 * Boolean operators for Result & Option (atm they are forbidden)
