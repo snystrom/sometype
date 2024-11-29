@@ -235,7 +235,7 @@ error() == ok(1)
 
 ## Use Cases
 
-### Refactors
+### Alternative to tryCatch
 
 Use with methods that do not natively support `sometype`.
 ```{r}
@@ -263,6 +263,13 @@ try_result(may_fail(5))
 ```{r}
 try_result(may_fail(11))
 ```
+
+Catch into custom error types
+```{r}
+try_result(may_fail(11), .err_type = "a_custom_error")
+```
+
+### Refactors
 
 Consider a situation where two methods are owned by an external source (`method_one`, `method_two`), that we wrap into our own handler, `nested_may_fail`.
 ```{r}
