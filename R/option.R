@@ -124,12 +124,16 @@ is_none <- function(x) {
   is_option(x) && option_enum(x, "none")
 }
 
+unwrap <- function(x) {
+  UseMethod("unwrap")
+}
+
 #' Extract a contained value in an option or error
 #' @param x a value. If `some()` will extract the contained value. If `none`
 #'   will crash.
 #' @return the unwrapped value in some(x)
 #' @export
-unwrap <- function(x) {
+unwrap.option <- function(x) {
   if (is_none(x)) {
     stop("Cannot unwrap, got None", call.=FALSE)
   }
@@ -141,10 +145,12 @@ unwrap <- function(x) {
     return(x)
   }
 
-  if (!is_some(x)) {
-    # TODO: do we panic?
-    stop("Cannot unwrap raw value", call. = FALSE)
-  }
+  stop("Error unwrapping unknown option. Should never throw.", call. = FALSE)
+}
+
+#' @export
+unwrap.default <- function(x) {
+  stop("Cannot unwrap raw value", call. = FALSE)
 }
 
 

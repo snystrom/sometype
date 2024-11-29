@@ -209,6 +209,190 @@ e
 ```
 
 ``` r
+# NOTE: I had to hack RMD to display this suggesting I haven't quite got the error() implementation down yet.
 stop(e)
-#> Error: a custom messag
+#> Error: a custom message
+```
+
+### Ok(T)
+
+``` r
+ok(5)
+#> Result<ok(numeric)>
+#> [1] 5
+```
+
+Results can be unwrapped just like Options.
+
+``` r
+unwrap(ok(5))
+#> [1] 5
+```
+
+### Results are incompatible with base methods
+
+``` r
+ok(5) + 1
+#> Error: Cannot use + on Result<Ok>
+```
+
+``` r
+as.integer(ok(5))
+#> Error: Cannot convert Result<Ok> to integer.
+```
+
+But can be compared with other Results
+
+``` r
+ok(1) == ok(1)
+#> [1] TRUE
+```
+
+``` r
+ok(1) == ok(2)
+#> [1] FALSE
+```
+
+``` r
+ok(1) == 1
+#> Error in `==.result`(ok(1), 1): Cannot compare Result<Ok> to non-Result.
+```
+
+``` r
+error() == error()
+#> [1] TRUE
+```
+
+``` r
+error() == ok(1)
+#> [1] FALSE
+```
+
+## Use Cases
+
+### Refactors
+
+Use with methods that do not natively support `sometype`.
+
+``` r
+may_fail <- function(x) {
+  if (x > 10) {
+    stop("failure!")
+  } else {
+    return("success!")
+  }
+}
+```
+
+``` r
+may_fail(5)
+#> [1] "success!"
+```
+
+``` r
+may_fail(11)
+#> Error in may_fail(11): failure!
+```
+
+``` r
+try_result(may_fail(5))
+#> Result<ok(character)>
+#> [1] "success!"
+```
+
+``` r
+try_result(may_fail(11))
+#> Result<Error>
+#>   Error<generic_result_error>
+#>     'failure!'
+```
+
+Consider a situation where two methods are owned by an external source (`method_one`, `method_two`), that we wrap into our own handler, `nested_may_fail`.
+
+``` r
+# Pretend this is from another package, we don't control whether it `stop`s
+method_one <- function() {
+  stop("method one failed")
+}
+
+# Pretend this is from another package, we don't control whether it `stop`s
+method_two <- function() {
+  stop("method two failed")
+}
+
+# This is our function, we only control how to handle the outputs
+nested_may_fail <- function(x = TRUE) {
+  if (x) {
+    method_one()
+  } else {
+    method_two()
+  }
+}
+```
+
+``` r
+nested_may_fail(TRUE)
+#> Error in method_one(): method one failed
+```
+
+``` r
+nested_may_fail(FALSE)
+#> Error in method_two(): method two failed
+```
+
+If we control `nested_may_fail` but do not control the implementations of `method_one` or `method_two`, it is difficult to handle each method failure without writing `tryCatch` logic in-place for each method.
+
+``` r
+handle_method_one_fail <- function(e) {
+  message('caught failure one')
+}
+
+handle_method_two_fail <- function(e) {
+  message('caught failure two')
+}
+
+nested_may_fail <- function(x = TRUE) {
+  if (x) {
+    tryCatch(method_one(),
+             error = handle_method_one_fail
+             )
+  } else {
+    tryCatch(method_two(),
+             error = handle_method_two_fail
+             )
+  }
+}
+
+nested_may_fail()
+#> caught failure one
+```
+
+Using `result`s and `error`s allows us to take ownership of errors and centralize how we handle the output.
+
+``` r
+
+nested_may_fail <- function(x = TRUE) {
+  if (x) {
+    try_result(method_one(), .err_type = "method_one")
+  } else {
+    try_result(method_two(), .err_type = "method_two")
+  }
+}
+```
+
+``` r
+result <- nested_may_fail()
+
+if (is_err(result)) {
+  switch(result$error_type,
+         method_one = message("caught failure one"),
+         method_two = message("caught failure two"),
+         generic_result_error = stop(result),
+         stop("Unknown error type")
+         )
+} else {
+  result <- unwrap(result)
+}
+#> caught failure one
+# Continue with success logic
 ```

@@ -17,5 +17,8 @@ error(type, message, ...)
 Error type
 }
 \examples{
-error('render_error', 'unable to render Rmd')
+e <- error('render_error', 'unable to render Rmd')
+\dontrun{
+stop(e)
+}
 }
