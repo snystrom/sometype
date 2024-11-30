@@ -1,4 +1,4 @@
 library(testthat)
-library(optical)
+library(sometype)
 
-test_check("optical")
+test_check("sometype")
