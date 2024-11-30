@@ -217,3 +217,29 @@ unwrap_err.result <- function(x) {
 
   x
 }
+
+#' Pattern match a result output
+#'
+#' @param x a Result
+#' @param ... passed to `switch`
+#' @export
+match_result <- function(x, ...) {
+  UseMethod("match_result")
+}
+
+#' @export
+match_result.result <- function(x, ...) {
+  match <- none
+  if (is_err(x))
+    match <- some(x$error_type)
+
+  if (is_ok(x))
+    match <- some("ok")
+
+  result_match <- expect(match, "Result does not match Ok or have an error_type.")
+  switch(result_match,
+         ...,
+         # TODO: should this be a generic error fallback???.... hmmmmm...
+         stop("Unhandled Result match case (should never throw).")
+         )
+}

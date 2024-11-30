@@ -105,3 +105,27 @@ test_that("unwrap_err works", {
  expect_equal(unwrap_err(error()), error())
  expect_error(unwrap_err(ok(1), 1))
 })
+
+test_that("match_result works", {
+
+  expect_equal(
+    match_result(ok(1),
+                 ok = "got ok"
+                 ),
+               "got ok"
+               )
+
+  expect_equal(
+    match_result(error("test_error"),
+                 test_error = "got error"
+                 ),
+               "got error"
+               )
+  expect_equal(
+    match_result(error("test_error"),
+                 test_error = "got error",
+                 ok = "nope"
+                 ),
+               "got error"
+               )
+})
