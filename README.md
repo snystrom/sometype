@@ -10,8 +10,6 @@ Other packages have done something for `Option` ([maybe](https://cran.r-project.
 
 ## Installation
 
-And the development version from [GitHub](https://github.com/) with:
-
 ``` r
 # install.packages("remotes")
 remotes::install_github("snystrom/sometype")
