@@ -1,9 +1,10 @@
 Package: sometype
-Title: Experiments implementing Options & Results
+Title: Dependency-free Option & Result types
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Spencer",
            family = "Nystrom",
+           email = "nystromdev@gmail.com",
            role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-1000-1579"))
 Description: What the package does (one paragraph).
