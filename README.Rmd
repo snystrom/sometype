@@ -303,7 +303,21 @@ if (is_err(result)) {
 } else {
   result <- unwrap(result)
 }
+
 # Continue with success logic
+```
+
+**Experimental: `match_result()`**
+
+This is just syntactic sugar over `switch` like above, but supports an `ok` entry.
+```{r}
+result <- nested_may_fail()
+output <- match_result(result,
+             method_one = message("caught failure one"),
+             method_two = message("caught failure two"),
+             generic_result_error = stop(result),
+             ok = unwrap(result)
+             )
 ```
 
 ## Conversion Methods
@@ -392,3 +406,4 @@ If an `option` or `result` can be provided as a valid argument to a function tha
 ## TODO's
 * Still some weirdness with the `error` impl, it could be better. (should we store & throw the original condition somehow?)
 * I'm not sold whether S3 is the right impl. May test an R6 version so it is more clear what methods are allowed on Result vs Option, etc.
+* should `match_result` support generic error fallback?
