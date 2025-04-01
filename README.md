@@ -137,7 +137,6 @@ e
 ```
 
 ``` r
-# NOTE: I had to hack RMD to display this suggesting I haven't quite got the error() implementation down yet.
 stop(e)
 #> Error: a custom message
 ```
