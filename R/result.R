@@ -22,7 +22,7 @@ error <- function(type, message, ...) {
             length(message) == 1
             )
   structure(list(error_type = type,
-                 error_message = message,
+                 message = message,
                  # TODO: this is maybe stupid
                  error_metadata = list(...)),
             # TODO: incomplete condition impl, see stop() source for accessors, etc.
@@ -42,7 +42,7 @@ conditionMessage.result <- function(c) {
   if (!is_err(c)) {
     stop("unable to unpack conditionMessage from non-error Result (should never throw!).", call. = FALSE)
   }
-  c$error_message
+  c$message
 }
 #' @export
 conditionCall.result_error <- function(c) {
@@ -111,7 +111,7 @@ print.result <- function(x, ...) {
   if (is_err(x)) {
     cat("Result<Error>\n")
     cat(paste0("  Error<", x$error_type, ">\n"))
-    cat(paste0("    '", x$error_message, "'\n"))
+    cat(paste0("    '", x$message, "'\n"))
     # TODO: metadata printing?
     return(invisible(x))
   }
