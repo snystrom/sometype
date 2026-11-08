@@ -2,7 +2,7 @@ Package: sometype
 Title: Dependency-free Option & Result types
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Spencer",
+    person(given = "Sabrina",
            family = "Nystrom",
            email = "nystromdev@gmail.com",
            role = c("aut", "cre"),
