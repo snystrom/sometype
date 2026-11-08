@@ -56,16 +56,10 @@ answer > 2
 unwrap(answer) > 2
 ```
 
-```{r}
-# Syntactic sugar allows auto-unwrapping 
-# (this is probably a bad idea and I'll kill this later)
-answer <- !div0(10,2)
-answer == 5
-```
 
 ```{r, error = TRUE}
 # Unwrap(none) will crash
-answer <- !div0(10,0)
+answer <- unwrap(div0(10,0))
 ```
 
 ### Option<T> constructors

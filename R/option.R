@@ -124,23 +124,6 @@ is_none <- function(x) {
   is_option(x) && option_enum(x, "none")
 }
 
-#' Syntatic sugar to unwrap an Option
-#'
-#' EXPERIMENTAL & maybe a footgun. Ex if you `!x` thinking `x` is an option,
-#' but it's an `int`.
-#'
-#' @export
-#' @rdname not-unwrap
-#' @examples
-#' !some(5) == 5
-#' \dontrun{
-#' # This will error!
-#' !none
-#' }
-`!.option` <- function(e1) {
-  unwrap(e1)
-}
-
 #' @export
 `==.option` <- function(e1, e2) {
   if (is_none(e1) || is_none(e2)) {
