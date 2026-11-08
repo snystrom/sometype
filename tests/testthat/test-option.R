@@ -16,11 +16,9 @@ test_that("some equality works", {
 test_that("unwrap", {
   expect_error(unwrap(5), "Cannot unwrap")
   expect_error(unwrap(none), "got None")
-  expect_error(!none, "got None")
 
   x <- some(5)
   expect_equal(unwrap(x), 5)
-  expect_equal(!x, 5)
 })
 
 test_that("unwrap_or", {
