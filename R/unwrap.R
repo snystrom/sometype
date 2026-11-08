@@ -15,7 +15,7 @@ unwrap.default <- function(x) {
 #' @export
 unwrap.option <- function(x) {
   if (is_none(x)) {
-    stop("Cannot unwrap, got None", call.=FALSE)
+    stop("Cannot unwrap, got None", call. = FALSE)
   }
 
   if (is_some(x)) {

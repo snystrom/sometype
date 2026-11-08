@@ -6,7 +6,6 @@ test_that("error works", {
 
   expect_error(error(c("a", "a")), "length.type")
   expect_error(error("a", c("a", "a")), "length.message")
-
 })
 
 test_that("custom error message", {
@@ -32,7 +31,12 @@ test_that("result works", {
   expect_s3_class(ok(1), "result")
   t_err <- try(stop("oh no!"), silent = TRUE)
   rt_err <- error()
-  tc_err <- tryCatch({stop("oh no!")}, error = function(e) e )
+  tc_err <- tryCatch(
+    {
+      stop("oh no!")
+    },
+    error = function(e) e
+  )
   expect_error(ok(t_err), "Cannot create Result")
   expect_error(ok(rt_err), "Cannot create Result")
   expect_error(ok(tc_err), "Cannot create Result")
@@ -75,7 +79,6 @@ test_that("result as methods are forbidden", {
 
   lapply(ops, test_as_method, x = ok(5))
   lapply(ops, test_as_method, x = error())
-
 })
 
 test_that("Comparison works", {
@@ -97,35 +100,27 @@ test_that("as.option works", {
 })
 
 test_that("expect_err works", {
- expect_equal(expect_err(error(), "Should give generic_result_error"), error())
- expect_error(expect_err(ok(1), "Got OK!, Expected a Result<Error>"))
+  expect_equal(expect_err(error(), "Should give generic_result_error"), error())
+  expect_error(expect_err(ok(1), "Got OK!, Expected a Result<Error>"))
 })
 
 test_that("unwrap_err works", {
- expect_equal(unwrap_err(error()), error())
- expect_error(unwrap_err(ok(1), 1))
+  expect_equal(unwrap_err(error()), error())
+  expect_error(unwrap_err(ok(1), 1))
 })
 
 test_that("match_result works", {
+  expect_equal(
+    match_result(ok(1), ok = "got ok"),
+    "got ok"
+  )
 
   expect_equal(
-    match_result(ok(1),
-                 ok = "got ok"
-                 ),
-               "got ok"
-               )
-
+    match_result(error("test_error"), test_error = "got error"),
+    "got error"
+  )
   expect_equal(
-    match_result(error("test_error"),
-                 test_error = "got error"
-                 ),
-               "got error"
-               )
-  expect_equal(
-    match_result(error("test_error"),
-                 test_error = "got error",
-                 ok = "nope"
-                 ),
-               "got error"
-               )
+    match_result(error("test_error"), test_error = "got error", ok = "nope"),
+    "got error"
+  )
 })

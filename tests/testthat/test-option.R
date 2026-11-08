@@ -28,7 +28,6 @@ test_that("unwrap_or", {
 })
 
 test_that("unwrap_or_else", {
-
   fun <- function() {
     return(5)
   }
@@ -46,12 +45,19 @@ test_that("expect", {
 
 
 test_that("option converts", {
-
   expect_equal(option(5), some(5))
   expect_equal(option(NULL), none)
   expect_equal(option(NA), none)
   expect_equal(option(), none)
-  expect_equal(option(5, .none_predicates = list(function(x){x == 5})), none)
+  expect_equal(
+    option(
+      5,
+      .none_predicates = list(function(x) {
+        x == 5
+      })
+    ),
+    none
+  )
 })
 
 test_that("option operator methods forbidden", {
@@ -84,7 +90,6 @@ test_that("option as methods are forbidden", {
 
   lapply(ops, test_as_method, x = some(5))
   lapply(ops, test_as_method, x = none)
-
 })
 
 test_that("ok_or works", {

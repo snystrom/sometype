@@ -72,22 +72,15 @@ some <- function(x) {
     return(x)
   }
 
-  structure(x,
-            class = "option",
-            enum = "some",
-            option_t = class(x)
-            )
+  structure(x, class = "option", enum = "some", option_t = class(x))
 }
 
 # TODO: IDK that I like this impl, but let's jam for now
 # Another option could be structure("None")
 # which has the added benefit of working with glue:: et. al.
 #' @export
-none <- structure("None",
-                  class = "option",
-                  enum = "none")
+none <- structure("None", class = "option", enum = "none")
 #lockBinding('none', .GlobalEnv)
-
 
 #' @export
 print.option <- function(x, ...) {
@@ -146,8 +139,9 @@ ok_or <- function(x, .error_type, ...) {
 
 #' @export
 ok_or.option <- function(x, .error_type, ...) {
-  if (is_some(x))
+  if (is_some(x)) {
     return(ok(unwrap(x)))
+  }
 
   error(.error_type, ...)
 }

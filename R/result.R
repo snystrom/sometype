@@ -16,19 +16,18 @@ error <- function(type, message, ...) {
   if (missing(message)) {
     message <- type
   }
-  stopifnot(is.character(type),
-            is.character(message),
-            length(type) == 1,
-            length(message) == 1
-            )
-  structure(list(error_type = type,
-                 message = message,
-                 # TODO: this is maybe stupid
-                 error_metadata = list(...)),
-            # TODO: incomplete condition impl, see stop() source for accessors, etc.
-            class = c("result", "condition"),
-            result_enum = "error"
-            )
+  stopifnot(is.character(type), is.character(message), length(type) == 1, length(message) == 1)
+  structure(
+    list(
+      error_type = type,
+      message = message,
+      # TODO: this is maybe stupid
+      error_metadata = list(...)
+    ),
+    # TODO: incomplete condition impl, see stop() source for accessors, etc.
+    class = c("result", "condition"),
+    result_enum = "error"
+  )
 }
 
 result_enum <- function(x, is = c("ok", "error")) {
@@ -67,8 +66,9 @@ result_ok_t <- function(x) {
 
 result <- function(x, .err_type = "generic_result_error") {
   # TODO: polish
-  if (inherits(x, "condition"))
+  if (inherits(x, "condition")) {
     return(error(.err_type, message = conditionMessage(x)))
+  }
 
   if (is_ok(x)) {
     return(x)
@@ -102,8 +102,8 @@ result_ok_t <- function(x) {
 
 #' @export
 print.result <- function(x, ...) {
-  if(is_ok(x)) {
-    cat(paste0("Result<ok(", result_ok_t(x),")>\n"))
+  if (is_ok(x)) {
+    cat(paste0("Result<ok(", result_ok_t(x), ")>\n"))
     print(unwrap(x))
     return(invisible(x))
   }
@@ -147,10 +147,9 @@ print.result <- function(x, ...) {
 try_result <- function(expr, ...) {
   # TODO: no unit tests
   result(
-    tryCatch(expr,
-            error = function(e) {
-                return(e)
-            }),
+    tryCatch(expr, error = function(e) {
+      return(e)
+    }),
     ...
   )
 }
@@ -191,8 +190,9 @@ expect_err <- function(x, msg) {
 
 #' @export
 expect_err.result <- function(x, msg) {
-  if (is_ok(x))
+  if (is_ok(x)) {
     stop(msg, call. = FALSE)
+  }
 
   x
 }
@@ -212,8 +212,9 @@ unwrap_err <- function(x) {
 
 #' @export
 unwrap_err.result <- function(x) {
-  if (is_ok(x))
+  if (is_ok(x)) {
     stop(unwrap(x), call. = FALSE)
+  }
 
   x
 }
@@ -230,16 +231,19 @@ match_result <- function(x, ...) {
 #' @export
 match_result.result <- function(x, ...) {
   match <- none
-  if (is_err(x))
+  if (is_err(x)) {
     match <- some(x$error_type)
+  }
 
-  if (is_ok(x))
+  if (is_ok(x)) {
     match <- some("ok")
+  }
 
   result_match <- expect(match, "Result does not match Ok or have an error_type.")
-  switch(result_match,
-         ...,
-         # TODO: should this be a generic error fallback???.... hmmmmm...
-         stop("Unhandled Result match case (should never throw).")
-         )
+  switch(
+    result_match,
+    ...,
+    # TODO: should this be a generic error fallback???.... hmmmmm...
+    stop("Unhandled Result match case (should never throw).")
+  )
 }
